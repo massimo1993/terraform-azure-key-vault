@@ -1,3 +1,17 @@
+locals {
+  ip_addresses = [
+    for ip in var.ip_whitelist :
+      replace(ip, "/32", "")
+  ]
+
+  current_ip   = [chomp(data.http.ip_address.body)]
+  ip_whitelist = concat(local.ip_addresses, local.current_ip)
+
+  subnet_whitelist = [
+    for subnet in data.azurerm_subnet.subnet : subnet.id
+  ]
+}
+
 resource azurerm_key_vault key_vault {
   name = format("%s-%s-%03d",
     substr(

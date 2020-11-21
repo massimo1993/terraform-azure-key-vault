@@ -39,6 +39,22 @@ locals {
   )
 }
 
+date azurerm_client_config azure {}
+
+data http ip_address {
+  url = "http://ipv4.icanhazip.com"
+}
+
+data azurerm_subnet subnet {
+  for_each = {
+    for key, value in var.subnet_whitelist : key => value
+  }
+
+  name                 = each.value.subnet
+  virtual_network_name = each.value.virtual_network
+  resource_group_name  = each.value.resource_group
+}
+
 module naming {
   source  = "Azure/naming/azurerm"
   version = "0.1.0"
