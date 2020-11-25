@@ -19,7 +19,12 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 2.35.0"
+      version = "~> 2.33.0"
+    }
+
+    http = {
+      source  = "hashicorp/http"
+      version = "~> 2.0.0"
     }
   }
 }
@@ -39,7 +44,7 @@ locals {
   )
 }
 
-date azurerm_client_config azure {}
+data azurerm_client_config azure {}
 
 data http ip_address {
   url = "http://ipv4.icanhazip.com"
@@ -47,10 +52,10 @@ data http ip_address {
 
 data azurerm_subnet subnet {
   for_each = {
-    for key, value in var.subnet_whitelist : key => value
+    for subnet in var.subnet_whitelist : subnet.subnet_name => subnet
   }
 
-  name                 = each.value.subnet
+  name                 = each.value.subnet_name
   virtual_network_name = each.value.virtual_network
   resource_group_name  = each.value.resource_group
 }

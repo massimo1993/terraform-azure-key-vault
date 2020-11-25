@@ -16,22 +16,22 @@ variable info {
     sequence    = string
   })
 
-  description = "Info object used to construct naming convention for storage account."
+  description = "Info object used to construct naming convention for key vault."
 }
 
 variable tags {
   type        = map(string)
-  description = "Tags object used to tag storage account."
+  description = "Tags object used to tag key vault."
 }
 
 variable resource_group {
   type        = string
-  description = "Name of the resource group where the storage account will be deployed."
+  description = "Name of the resource group where the key vault will be deployed."
 }
 
 variable region {
   type        = string
-  description = "Region where all the storage account will be created."
+  description = "Region where the key vault will be created."
 }
 
 variable sku {
@@ -115,7 +115,7 @@ variable subnet_whitelist {
   type = list(object({
     resource_group  = string
     virtual_network = string
-    subnet          = string
+    subnet_name     = string
   }))
 
   description = "List of objects that contains information to look up a subnet. This is a whitelist of subnets to allow for the key vault."

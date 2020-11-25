@@ -1,64 +1,69 @@
 locals {
-  access_policy = concat(
-    [
-      {
-        object_id = data.azurerm_client_config.current.object_id
+  access_policy = merge(
+    {
+      "current_user" = {
+        object_id = data.azurerm_client_config.azure.object_id
         secrets   = ["get", "list", "set", "delete", "recover"]
         keys      = ["get", "list", "create", "delete", "recover"]
         certs     = ["get", "list", "create", "delete", "recover"]
         storage   = ["get", "list", "set", "update", "delete", "recover"]
       }
-    ],
-    [
-      for map in var.access_policy : {
-        object_id = data.azuread_service_principal.sp[map.name].object_id
-        secrets   = map.secrets
-        keys      = map.keys
-        certs     = map.certs
-        storage   = map.storage
-      }
+    },
+    {
+      for policy in var.access_policy :
+        policy.name => {
+          object_id = data.azuread_service_principal.sp[policy.name].object_id
+          secrets   = policy.secrets
+          keys      = policy.keys
+          certs     = policy.certs
+          storage   = policy.storage
+        }
 
-      if map.type == "sp"
-    ],
-    [
-      for map in var.access_policy : {
-        object_id = data.azuread_user.user[map.name].object_id
-        secrets   = map.secrets
-        keys      = map.keys
-        certs     = map.certs
-        storage   = map.storage
-      }
+      if policy.type == "sp"
+    },
+    {
+      for policy in var.access_policy :
+        policy.name => {
+          object_id = data.azuread_user.user[policy.name].object_id
+          secrets   = policy.secrets
+          keys      = policy.keys
+          certs     = policy.certs
+          storage   = policy.storage
+        }
 
-      if map.type == "user"
-    ],
-    [
-      for map in var.access_policy : {
-        object_id = data.azuread_group.group[map.name].object_id
-        secrets   = map.secrets
-        keys      = map.keys
-        certs     = map.certs
-        storage   = map.storage
-      }
+      if policy.type == "user"
+    },
+    {
+      for policy in var.access_policy :
+        policy.name => {
+          object_id = data.azuread_group.group[policy.name].object_id
+          secrets   = policy.secrets
+          keys      = policy.keys
+          certs     = policy.certs
+          storage   = policy.storage
+        }
 
-      if map.type == "group"
-    ],
-    [
-      for map in var.access_policy : {
-        object_id = data.azuread_application.app[map.name].object_id
-        secrets   = map.secrets
-        keys      = map.keys
-        certs     = map.certs
-        storage   = map.storage
-      }
+      if policy.type == "group"
+    },
+    {
+      for policy in var.access_policy :
+        policy.name => {
+          object_id = data.azuread_application.app[policy.name].object_id
+          secrets   = policy.secrets
+          keys      = policy.keys
+          certs     = policy.certs
+          storage   = policy.storage
+        }
 
-      if map.type == "app"
-    ]
+      if policy.type == "app"
+    }
   )
 }
 
 data azuread_service_principal sp {
   for_each = {
-    for index, map in var.access_policy : map.name => map if map.type == "sp"
+    for policy in var.access_policy : 
+      policy.name => policy if policy.type == "sp"
   }
 
   display_name = each.value.name
@@ -66,7 +71,8 @@ data azuread_service_principal sp {
 
 data azuread_user user {
   for_each = {
-    for index, map in var.access_policy : map.name => map if map.type == "user"
+    for policy in var.access_policy :
+      policy.name => policy if policy.type == "user"
   }
 
   user_principal_name = each.value.name
@@ -74,7 +80,8 @@ data azuread_user user {
 
 data azuread_group group {
   for_each = {
-    for index, map in var.access_policy : map.name => map if map.type == "group"
+    for policy in var.access_policy :
+      policy.name => policy if policy.type == "group"
   }
 
   name = each.value.name
@@ -82,7 +89,8 @@ data azuread_group group {
 
 data azuread_application app {
   for_each = {
-    for index, map in var.access_policy : map.name => map if map.type == "app"
+    for policy in var.access_policy :
+      policy.name => policy if policy.type == "app"
   }
 
   name = each.value.name
@@ -90,7 +98,7 @@ data azuread_application app {
 
 resource azurerm_key_vault_access_policy access_policy {
   for_each = {
-    for index, map in var.access_policy : index => map
+    for policy in var.access_policy : policy.name => policy
   }
 
   key_vault_id = azurerm_key_vault.key_vault.id

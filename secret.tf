@@ -1,6 +1,6 @@
 resource azurerm_key_vault_secret secret {
   for_each = {
-    for index, map in var.secret_list : index => map
+    for secret in var.secret_list : secret.name => secret
   }
 
   name  = each.value.name
@@ -12,4 +12,6 @@ resource azurerm_key_vault_secret secret {
   expiration_date = each.value.expiration_date
 
   tags = local.tags
+
+  depends_on = [azurerm_key_vault_access_policy.access_policy]
 }
