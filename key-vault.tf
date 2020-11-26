@@ -10,6 +10,14 @@ locals {
   subnet_whitelist = [
     for subnet in data.azurerm_subnet.subnet : subnet.id
   ]
+
+  network_acls = {
+    default_action = var.default_action
+    bypass         = var.bypass
+
+    ip_whitelist     = local.ip_whitelist
+    subnet_whitelist = local.subnet_whitelist
+  }
 }
 
 resource azurerm_key_vault key_vault {
@@ -38,12 +46,16 @@ resource azurerm_key_vault key_vault {
   soft_delete_enabled        = var.soft_delete_enabled
   soft_delete_retention_days = var.soft_delete_retention
 
-  network_acls {
-    default_action = var.default_action
-    bypass         = var.bypass
+  dynamic network_acls {
+    for_each = var.network_rules_enabled ? [local.network_acls] : []
 
-    ip_rules                   = local.ip_whitelist
-    virtual_network_subnet_ids = local.subnet_whitelist
+    content {
+      default_action = network_acls.value.default_action
+      bypass         = network_acls.value.bypass
+
+      ip_rules                   = network_acls.value.ip_whitelist
+      virtual_network_subnet_ids = network_acls.value.subnet_whitelist
+    }
   }
 
   tags = local.tags

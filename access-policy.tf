@@ -1,8 +1,9 @@
 locals {
   access_policy = merge(
     {
-      "current_user" = {
+      current_user = {
         object_id = data.azurerm_client_config.azure.object_id
+        name      = "current_user"
         secrets   = ["get", "list", "set", "delete", "recover"]
         keys      = ["get", "list", "create", "delete", "recover"]
         certs     = ["get", "list", "create", "delete", "recover"]
@@ -13,6 +14,7 @@ locals {
       for policy in var.access_policy :
         policy.name => {
           object_id = data.azuread_service_principal.sp[policy.name].object_id
+          name      = policy.name
           secrets   = policy.secrets
           keys      = policy.keys
           certs     = policy.certs
@@ -25,6 +27,7 @@ locals {
       for policy in var.access_policy :
         policy.name => {
           object_id = data.azuread_user.user[policy.name].object_id
+          name      = policy.name
           secrets   = policy.secrets
           keys      = policy.keys
           certs     = policy.certs
@@ -37,6 +40,7 @@ locals {
       for policy in var.access_policy :
         policy.name => {
           object_id = data.azuread_group.group[policy.name].object_id
+          name      = policy.name
           secrets   = policy.secrets
           keys      = policy.keys
           certs     = policy.certs
@@ -49,6 +53,7 @@ locals {
       for policy in var.access_policy :
         policy.name => {
           object_id = data.azuread_application.app[policy.name].object_id
+          name      = policy.name
           secrets   = policy.secrets
           keys      = policy.keys
           certs     = policy.certs
@@ -97,14 +102,12 @@ data azuread_application app {
 }
 
 resource azurerm_key_vault_access_policy access_policy {
-  for_each = {
-    for policy in var.access_policy : policy.name => policy
-  }
+  for_each = local.access_policy
 
   key_vault_id = azurerm_key_vault.key_vault.id
 
   tenant_id = data.azurerm_client_config.azure.tenant_id
-  object_id = local.access_policy[each.value.name].object_id
+  object_id = each.value.object_id
 
   secret_permissions      = each.value.secrets
   key_permissions         = each.value.keys

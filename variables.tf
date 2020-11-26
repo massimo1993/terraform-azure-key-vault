@@ -90,6 +90,13 @@ variable soft_delete_retention {
   default = 30
 }
 
+variable network_rules_enabled {
+  type        = bool
+  description = "Determines if network rules should be enabled for the key vault."
+
+  default = true
+}
+
 variable default_action {
   type        = string
   description = "The default action for the firewall used by the key vault."
