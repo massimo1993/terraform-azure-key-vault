@@ -201,19 +201,17 @@ variable cert_list {
       reusable   = bool
     })
 
-    name           = string
-    renewal_period = number
-    type           = string
+    name = string
+    type = string
 
+    days_before_expiry = number
     extended_key_usage = list(string)
     key_usage          = list(string)
 
     subject         = string
     validity_months = number
 
-    subject_alternative_names = object({
-      dns_names = list(string)
-    })
+    subject_alternative_names = list(string)
   }))
 
   description = "List of objects that contains certificates to create inside of a key vault."

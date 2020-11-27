@@ -64,7 +64,7 @@ resource azurerm_key_vault_certificate certificate {
       }
 
       trigger {
-        days_before_expiry = each.value.renewal_period
+        days_before_expiry = each.value.days_before_expiry
       }
     }
 
@@ -80,7 +80,7 @@ resource azurerm_key_vault_certificate certificate {
       validity_in_months = each.value.validity_months
 
       subject_alternative_names {
-        dns_names = each.value.subject_alternative_names.dns_names
+        dns_names = each.value.subject_alternative_names
       }
     }
   }
