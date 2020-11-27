@@ -146,12 +146,15 @@ variable access_policy {
 variable key_list {
   type = list(object({
     name            = string
-    key_type        = string
-    key_size        = number
-    key_opts        = list(string)
-    ec_curve        = string
     start_date      = string
     expiration_date = string
+
+    key = object({
+      type     = string
+      size     = number
+      opts     = list(string)
+      ec_curve = string
+    })
   }))
 
   description = "List of objects that contains keys to create inside of a key vault."
@@ -167,5 +170,52 @@ variable secret_list {
   }))
 
   description = "List of objects that contains secrets to create inside of a key vault."
+  default     = []
+}
+
+variable cert_file_list {
+  type = list(object({
+    name     = string
+    file     = string
+    password = string
+    type     = string
+
+    key = object({
+      exportable = bool
+      size       = number
+      type       = string
+      reusable   = bool
+    })
+  }))
+
+  description = "List of objects that contains certificate file to import inside of a key vault."
+  default     = []
+}
+
+variable cert_list {
+  type = list(object({
+    key = object({
+      exportable = bool
+      size       = number
+      type       = string
+      reusable   = bool
+    })
+
+    name           = string
+    renewal_period = number
+    type           = string
+
+    extended_key_usage = list(string)
+    key_usage          = list(string)
+
+    subject         = string
+    validity_months = number
+
+    subject_alternative_names = object({
+      dns_names = list(string)
+    })
+  }))
+
+  description = "List of objects that contains certificates to create inside of a key vault."
   default     = []
 }

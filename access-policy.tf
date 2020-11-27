@@ -4,10 +4,44 @@ locals {
       current_user = {
         object_id = data.azurerm_client_config.azure.object_id
         name      = "current_user"
-        secrets   = ["get", "list", "set", "delete", "recover"]
-        keys      = ["get", "list", "create", "delete", "recover"]
-        certs     = ["get", "list", "create", "delete", "recover"]
-        storage   = ["get", "list", "set", "update", "delete", "recover"]
+
+        secrets = [
+          "get",
+          "list",
+          "set",
+          "delete",
+          "recover"
+        ]
+
+        keys = [
+          "get",
+          "list",
+          "create",
+          "delete",
+          "recover"
+        ]
+
+        certs = [
+          "get",
+          "getissuers",
+          "list",
+          "listissuers",
+          "create",
+          "import",
+          "setissuers",
+          "delete",
+          "deleteissuers",
+          "recover"
+        ]
+
+        storage = [
+          "get",
+          "list",
+          "set",
+          "update",
+          "delete",
+          "recover"
+        ]
       }
     },
     {

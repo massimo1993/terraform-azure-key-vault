@@ -6,11 +6,11 @@ resource azurerm_key_vault_key key {
   name         = each.value.name
   key_vault_id = azurerm_key_vault.key_vault.id
 
-  key_type = each.value.key_type
-  key_size = each.value.key_size
-  key_opts = each.value.key_opts
+  key_type = each.value.key.type
+  key_size = each.value.key.size
+  key_opts = each.value.key.opts
 
-  curve = each.value.ec_curve
+  curve = each.value.key.ec_curve
 
   not_before_date = each.value.start_date
   expiration_date = each.value.expiration_date
