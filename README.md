@@ -25,8 +25,18 @@ The examples folder consist of the following examples:
 - `secret`: example creating a secret inside of a key vault.
 - `subnet-whitelist`: example creating a key vault with a subnet whitelist.
 
-**Note**: Key Vault at the moment only supports importing PKCS #8 PEM
+**Note**: Key Vault at the moment only supports importing **PKCS #8** PEM
 certificates, PKCS #1 will not work. PFX certificates are also supported.
+
+You can easily convert to PKCS #8 using the following command:
+
+```
+$ openssl pkcs8 \
+    -in cert.pem \
+    -topk8 \
+    -nocrypt \
+    -out cert-pk8.pem
+```
 
 # License
 
