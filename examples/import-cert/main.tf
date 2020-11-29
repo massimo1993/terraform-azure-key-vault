@@ -11,7 +11,7 @@
 
 module resource_group {
   source  = "massimo1993/resource-group/azure"
-  version = "0.0.1"
+  version = "0.0.2"
 
   info = var.info
   tags = var.tags
@@ -21,7 +21,7 @@ module resource_group {
 
 module key_vault {
   source  = "massimo1993/key-vault/azure"
-  version = "0.0.1"
+  version = "0.0.2"
 
   info = var.info
   tags = var.tags
