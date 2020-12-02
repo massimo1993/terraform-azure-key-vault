@@ -9,10 +9,6 @@
 #
 # https://www.terraform.io/docs/providers/azurerm/index.html
 
-provider azurerm {
-  features {}
-}
-
 terraform {
   required_version = "~> 0.13.0"
 

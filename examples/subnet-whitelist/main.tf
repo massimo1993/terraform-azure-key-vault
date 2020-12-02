@@ -9,6 +9,10 @@
 #
 # https://www.terraform.io/docs/providers/azurerm/index.html
 
+provider azurerm {
+  features {}
+}
+
 module resource_group {
   source  = "massimo1993/resource-group/azure"
   version = "0.0.3"
